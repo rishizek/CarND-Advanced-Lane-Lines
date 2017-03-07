@@ -18,8 +18,8 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [image1]: ./examples/undistort_output_2.png "Undistorted"
-[image2]: ./test_images/test1.jpg "Road Transformed"
-[image3]: ./examples/binary_combo_example.jpg "Binary Example"
+[image2]: ./test_images/undistorted_test1.jpg "Road Transformed"
+[image3]: ./test_images/binary_test1.jpg "Binary Example"
 [image4]: ./examples/warped_straight_lines.jpg "Warp Example"
 [image5]: ./examples/color_fit_lines.jpg "Fit Visual"
 [image6]: ./examples/example_output.jpg "Output"
@@ -32,7 +32,7 @@ The goals / steps of this project are the following:
 
 ####1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in the 2nd-3rd code cell of the IPython notebook located in "./camera_calibration.ipynb".  
+The code for this step is contained in the 2nd-3rd code cell of the Jupyter notebook located in "./camera_calibration.ipynb".  
 
 I start by obtained the reference code from 
 [Udacity's Camera Calibration code](https://github.com/udacity/CarND-Camera-Calibration), and 
@@ -51,11 +51,21 @@ is as follow:
 ###Pipeline (single images)
 
 ####1. Provide an example of a distortion-corrected image.
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
+The distortion-correction via the camera calibration is applied to the test images given in
+"test_images" folder as well as the undistorted image results. 
+Here the code for this step is found in the 5th cell of the Jupyter notebook in 
+`image_generation.ipynb`. One of the test images' results is given below:
 ![alt text][image2]
-####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+Here, we can observe that the right-most car is partially cut due to image 
+undistortion.
 
+####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
+I used a combination of color and gradient thresholds to generate a binary image 
+(the convert functions are found in 2nd cell and thresholding steps in 6th cell of Jupyte notebook
+`image_generation.ipynb`, and the test results in "test_images" folder). 
+As you may find in the code, I initially tried to use the magnitude and direction of 
+the gradient but it turned out to generate more noise and after several trials I decided not to use
+them. Here's an example of my output for this step.  
 ![alt text][image3]
 
 ####3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.

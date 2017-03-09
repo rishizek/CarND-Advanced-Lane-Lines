@@ -20,9 +20,10 @@ The goals / steps of this project are the following:
 [image1]: ./examples/undistort_output_2.png "Undistorted"
 [image2]: ./test_images/undistorted_test1.jpg "Road Transformed"
 [image3]: ./test_images/binary_test1.jpg "Binary Example"
-[image4]: ./examples/warped_straight_lines.jpg "Warp Example"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
+[image4]: ./test_images/perspective_straight_lines1.jpg "Warp Example"
+[image5]: ./test_images/perspective_test5.jpg "Output"
+[image6]: ./examples/color_fit_lines.jpg "Fit Visual"
+[image7]: ./examples/example_output.jpg "Output"
 [video1]: ./project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
@@ -61,7 +62,7 @@ undistortion.
 
 ####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 I used a combination of color and gradient thresholds to generate a binary image 
-(the convert functions are found in 2nd cell and thresholding steps in 6th cell of Jupyte notebook
+(the convert functions are found in the 2nd cell and thresholding steps in the 6th cell of Jupyter notebook
 `image_generation.ipynb`, and the test results in "test_images" folder). 
 As you may find in the code, I initially tried to use the magnitude and direction of 
 the gradient but it turned out to generate more noise and after several trials I decided not to use
@@ -70,39 +71,48 @@ them. Here's an example of my output for this step.
 
 ####3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
-
+The codes for my perspective transform are found in the 7th (tuning) and 8th (example application) cell of Jupyter notebook
+`image_generation.ipynb` (lines 28-55 in the cell), and the test results in "test_images" folder.
+I used `cv2.getPerspectiveTransform()` function provided by openCV to obtain 
+the transformation matrix, which requires the source (src) and destination (dst) points to
+generate the matrix. I used a trapezoid to fit source points to the straight lines' image
+with parameters: Bottom offset percentage (bottom_offset_pct),
+Bottom trapezoid width percentage (bottom_width_pct),
+Trapezoid height percentage (height_pct), 
+and Upper trapezoid width percentage (upper_width_pct).
+The source (src) and destination (dst) points of computed with the following formula:
 ```
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
-
+src_upper_left = (img_size[0] * (.5 - upper_width_pct / 2), img_size[1] * (1 - height_pct - bottom_offset_pct))
+src_upper_right = (img_size[0] * (.5 + upper_width_pct / 2), img_size[1] * (1 - height_pct - bottom_offset_pct))
+src_bottom_right = (img_size[0] * (.5 + bottom_width_pct / 2), img_size[1] * (1 - bottom_offset_pct))
+src_bottom_left = (img_size[0] * (.5 - bottom_width_pct / 2), img_size[1] * (1 - bottom_offset_pct))
+dst_upper_left = (offset, 0)
+dst_upper_right = (img_size[0]-offset, 0)
+dst_bottom_right = (img_size[0]-offset, img_size[1])
+dst_bottom_left = (offset, img_size[1]
 ```
-This resulted in the following source and destination points:
+This resulted in the parameters to generate bird-view images:
 
-| Source        | Destination   | 
-|:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
-
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+| Parameters       | Values (%)      |Description                        |
+|:----------------:|:---------------:|:---------------------------------:|
+| upper_width_pct  | 11.0            | Upper trapezoid width percentage  |
+| bottom_offset_pct|  4.0            | Bottom offset percentage          |
+| bottom_width_pct | 69.0            | Bottom trapezoid width percentage |
+| height_pct       | 32.0            | Trapezoid height percentage       |
+| offsett_pct      |img_size[0] * .18| Offset for destination points     |
 
 ![alt text][image4]
+
+I further verified that my perspective transform was working properly in
+the 8th (example application) cell of Jupyter notebook.
+![alt text][image5]
+
 
 ####4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
 Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
 
-![alt text][image5]
+![alt text][image6]
 
 ####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
@@ -112,7 +122,7 @@ I did this in lines # through # in my code in `my_other_file.py`
 
 I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
 
-![alt text][image6]
+![alt text][image7]
 
 ---
 

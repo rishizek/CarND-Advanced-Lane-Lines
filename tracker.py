@@ -91,3 +91,4 @@ class Tracker:
         # return averaged values of the line centers, helps to keep the markers
         # from jumping around too much
         return np.average(self.recent_centers[-self.smooth_factor:], axis=0)
+

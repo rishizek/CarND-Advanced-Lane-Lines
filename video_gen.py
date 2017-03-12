@@ -1,9 +1,7 @@
 from moviepy.editor import VideoFileClip
-from IPython.display import HTML
 import numpy as np
 import cv2
 import pickle
-import glob
 from tracker import Tracker
 
 # The code below is originally created in the lesson at Udacity self-driving car nano degree.
@@ -91,7 +89,7 @@ def process_image(img):
     grady = abs_sobel_thresh(undistort, orient='y', sobel_kernel=ksize, thresh=(30, 255))
     # mag_binary = mag_thresh(undistort, sobel_kernel=ksize, mag_thresh=(30, 100))
     # dir_binary = dir_threshold(undistort, sobel_kernel=ksize, thresh=(0.7, 1.3)) #, thresh=(0, np.pi/2))
-    c_binary = hls_select(undistort, thresh=(170, 255))
+    c_binary = hls_select(undistort, thresh=(170, 220))
 
     # Pre-process image template
     preprocessImage = np.zeros_like(c_binary)
@@ -127,12 +125,6 @@ def process_image(img):
     # cv2.warpPerspective() is used to warp the original image to a top-down view
     warped = cv2.warpPerspective(preprocessImage, M, img_size, flags=cv2.INTER_LINEAR)
 
-    window_width = 25
-    window_height = 80
-
-    # Set up the overall class to do all the tracking
-    curve_centers = Tracker(mywindow_width=window_width, mywindow_height=window_height, mymargin=25,
-                            my_ym=10 / 720, my_xm=4 / 384, mysmooth_factor=15)
 
     window_centroids = curve_centers.find_window_centroids(warped)
 
@@ -152,20 +144,9 @@ def process_image(img):
             # Add center value found in frame to the list of lane points per left and right
             leftx.append(window_centroids[level][0])
             rightx.append(window_centroids[level][1])
-            # Window_mask is a function to draw window areas
-            l_mask = window_mask(window_width, window_height, warped, window_centroids[level][0], level)
-            r_mask = window_mask(window_width, window_height, warped, window_centroids[level][1], level)
-            # Add graphic points from window mask here to total pixels found
-            l_points[(l_points == 255) | ((l_mask == 1))] = 255
-            r_points[(r_points == 255) | ((r_mask == 1))] = 255
 
-        # Draw the results
-        #template = np.array(r_points + l_points, np.uint8)  # add both left and right window pixels together
-        #zero_channel = np.zeros_like(template)  # create a zero color channle
-        #template = np.array(cv2.merge((zero_channel, template, zero_channel)), np.uint8)  # make window pixels green
         output = np.array(cv2.merge((warped, warped, warped)),
                            np.uint8)  # making the original road pixels 3 color channels
-        #output = cv2.addWeighted(output, 1, template, 0.5, 0.0)  # overlay the orignal road image with window results
 
     # If no window centers found, just display orginal road image
     else:
@@ -251,6 +232,13 @@ dist = dist_pickle["dist"]
 
 output_vide = 'output1_tracked.mp4'
 input_video = 'project_video.mp4'
+
+window_width = 25
+window_height = 80
+
+# Set up the overall class to do all the tracking
+curve_centers = Tracker(mywindow_width=window_width, mywindow_height=window_height, mymargin=25,
+                        my_ym=10 / 720, my_xm=4 / 384, mysmooth_factor=15)
 
 clip1 = VideoFileClip(input_video)
 video_clip = clip1.fl_image(process_image)

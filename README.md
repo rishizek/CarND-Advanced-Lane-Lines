@@ -15,7 +15,7 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/undistort_output_2.png "Undistorted"
+[image1]: ./output_images/undistort_output_2.png "Undistorted"
 [image2]: ./output_images/undistorted_test1.jpg "Road Transformed"
 [image3]: ./output_images/binary_test1.jpg "Binary Example"
 [image4]: ./output_images/perspective_straight_lines1.jpg "Warp Example"
@@ -27,14 +27,13 @@ The goals / steps of this project are the following:
 ---
 ####1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in the 2nd-3rd code cell of the Jupyter notebook located in "./camera_calibration.ipynb".  
+The code for this step is contained in the 2nd-3rd cell of the Jupyter notebook located in "camera_calibration.ipynb".  
 
 I started by obtained the reference code from 
 [Udacity's Camera Calibration code](https://github.com/udacity/CarND-Camera-Calibration), and 
 modified parameters so that the code ran with this project (e.g. the number of chessboard corners, etc.). 
-Then, the "object points", which assumes the image locate on xy plane (i.e. z=0), and the "image points", stores actual 
-data points (x, y) on each images, are collected (in 2nd code cell).
-
+Then, the "object points", which assumes the image locate on xy plane (i.e. z=0) and the "image points", which 
+store actual data points (x, y) on each images, are recorded (in 2nd code cell).
 After that, the camera calibration and distortion coefficients are calculated in the 3rd code cell 
 using the `cv2.calibrateCamera()`, which uses `objpoints` and `imgpoints` as input variables.
 
@@ -46,10 +45,10 @@ is as follow:
 ###Pipeline (single images)
 
 ####1. Provide an example of a distortion-corrected image.
-The distortion-correction via the camera calibration is applied to the test images given in
-"test_images" folder as well as the undistorted image results. 
+The distortion-correction via the camera calibration is applied to the test images in
+"test_images" folder in addition to the undistorted image results. 
 Here the code for this step is found in the 5th cell of the Jupyter notebook in 
-`image_generation.ipynb`. One of the test images' results is given below:
+`image_generation.ipynb`. One of the test image results is given below:
 ![alt text][image2]
 where we can observe that the right-most car is partially cut due to the image 
 undistortion. You can find other results in "output_images" folder.
@@ -57,19 +56,19 @@ undistortion. You can find other results in "output_images" folder.
 ####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 I used a combination of color and gradient thresholds to generate a binary image 
 (the convert functions are found in the 2nd cell, and thresholding steps in the 6th cell of Jupyter notebook
-`image_generation.ipynb`, respectively, and the test results can be also found in "output_images" folder). 
-As you may find in the code, I initially tried to use the magnitude and direction of 
-the gradient but it turned out to generate more noise and after several trials I decided not to use
-them. Here's an example of my output for this step.  
+`image_generation.ipynb`, respectively, and all the test results will be found in "output_images" folder). 
+As you may notice from the code, I initially tried to use the magnitude and direction of 
+the gradient but it turned out that it generates more noise and after several trials I decided not to use
+them. Here's an example of my output for this step:
 ![alt text][image3]
 
 ####3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
 The codes for my perspective transform are found in the 7th (calibration by straight line) and 8th (test examples) cell of Jupyter notebook
-`image_generation.ipynb` (lines 28-55 in the cell), and the test results in "test_images" folder.
+`image_generation.ipynb` (lines 28-55 in the cell), and the other test results in "output_images" folder.
 I used `cv2.getPerspectiveTransform()` function provided by openCV to obtain 
 the transformation matrix, which requires the source (src) and destination (dst) points to
-generate the matrix. I used a trapezoid to fit source points to the straight lines' image
+generate the matrix. I used a trapezoid to fit source points to the straight line image
 with parameters: bottom offset percentage (bottom_offset_pct),
 bottom trapezoid width percentage (bottom_width_pct),
 trapezoid height percentage (height_pct), 
@@ -85,7 +84,7 @@ dst_upper_right = (img_size[0]-offset, 0)
 dst_bottom_right = (img_size[0]-offset, img_size[1])
 dst_bottom_left = (offset, img_size[1]
 ```
-This resulted in the parameters to generate bird-view images:
+where I used following parameters to generate bird-view images:
 
 | Parameters       | Values (%)      |Description                        |
 |:----------------:|:---------------:|:---------------------------------:|
@@ -95,6 +94,7 @@ This resulted in the parameters to generate bird-view images:
 | height_pct       | 32.0            | Trapezoid height percentage       |
 | offsett_pct      |img_size[0] * .15| Offset for destination points     |
 
+An example of straight line image to tune parameters:
 ![alt text][image4]
 
 I further verified that my perspective transform was working properly by applying it to test 
@@ -126,7 +126,7 @@ lane-line pixels were converted to the actual scale before the calculation of th
 
 Similarly the position of the vehicle with respect to center was computed using the difference
 between the center of the image and the center of left and right lanes for x direction at 
-the bottom of image, with the "meter per pixel rations for x direction".
+the bottom of image, with the "meter per pixel rations for x direction" conversion.
 
 ####6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
@@ -154,21 +154,21 @@ Here's a [link to my video result](./output1_tracked.mp4).
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-I found my lane detector failed to identify the correct lanes mainly in two situations.
+I found my lane detector could fail to identify the correct lanes possibly in two situations.
 
-First case happens when roads under sun light with shadows around it. Under this circumstance 
-my binary image threshold with the color and gradient transformation, occasionally capture incorrect
-pixes as lane lines. Currently, I am only using the x- and y-gradients of Sobel method and S-channel
-of HLS as threshold, so I may be able to improve this issue if I further fine-tune the parameters 
-and/or add other channels of HSF for the thresholds.
+First case happens when the roads is under strong sun light with shadows around it. 
+Under this circumstance my binary image threshold with the color and gradient transformation, occasionally capture incorrect
+pixes as lane lines. Currently, I am only using the x- and y-gradients of Sobel filter and S-channel
+of HLS as threshold. Therefore, I might be able to improve this issue if I further fine-tune the parameters 
+and/or integrate other channels of HLS for the thresholds.
 
-The other major problem my model confronted is when there is no lane at the video frame. Obviously
-when there is no lane in the image it is impossible to locate the lane. To mitigate this issue, I 
-averaged past 15 recoder of x-axis lane location.　Although the averaging method makes the detected 
-lane locations fairly smooth, when the model incorrectly find fake lane, the lane line divert 
-from the correct lane temporarily. This behavior could be avoided if we conduct sanity checks 
+The other noticeable problem that my model confronts happens when there is no lane at 
+the video frame. Obviously when there is no lane in the image it is impossible to locate 
+the lane. To mitigate this issue, I averaged past 15 recoder of x-axis lane location.　
+Although the averaging method makes the detected 
+lane locations fairly smooth, when the model incorrectly find fake lane, the lane line could
+divert from the actual lane temporarily. This behavior could be avoided if we conduct 
+the sanity checks 
 (lanes have similar curvature to before, right and left lanes are approximately similar distance away,
-lanes are roughly parallel) and in case the sanity checks fail, we retain the previous lane positions 
-from the frame.
-
-Apply the above mentioned approach, I'm sure my model will be more robust.
+lanes are roughly parallel) and in case the sanity checks fail, retaining the previous lane positions 
+from the frame could make the model more robust.

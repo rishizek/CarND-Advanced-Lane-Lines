@@ -195,19 +195,12 @@ def process_image(img):
     ym_per_pix = curve_centers.ym_per_pix  # meters per pixel in y dimension
     xm_per_pix = curve_centers.xm_per_pix  # meters per pixel in x dimension
 
-    # Caluculate the left and right lane curveture and average them
-    left_curve_fit_cr = np.polyfit(np.array(res_yvals, np.float32) * ym_per_pix,
-                                   np.array(leftx, np.float32) * xm_per_pix, 2)
-    left_curverad = ((1 + (2 * left_curve_fit_cr[0] * yvals[-1] * ym_per_pix + left_curve_fit_cr[1]) ** 2) ** 1.5) \
-                    / np.absolute(2 * left_curve_fit_cr[0])
-    right_curve_fit_cr = np.polyfit(np.array(res_yvals, np.float32) * ym_per_pix,
-                                    np.array(rightx, np.float32) * xm_per_pix, 2)
-    right_curverad = ((1 + (2 * right_curve_fit_cr[0] * yvals[-1] * ym_per_pix + right_curve_fit_cr[1]) ** 2) ** 1.5) \
-                     / np.absolute(2 * right_curve_fit_cr[0])
-    curverad = (left_curverad + right_curverad) / 2
-
-    left_fitx = left_fit[0] * np.array(yvals) * np.array(yvals) + left_fit[1] * np.array(yvals) + left_fit[2]
-    left_fitx = np.array(left_fitx, np.int32)
+    # Evaluate the polynomials at the middle of the image and calculate curvature
+    ceterx = [(l + r)/2 for l, r in zip(leftx, rightx)] # Averae x dimension of left and right lane
+    curve_fit_cr = np.polyfit(np.array(res_yvals, np.float32)*ym_per_pix,
+                                                np.array(ceterx, np.float32) * xm_per_pix, 2)
+    curverad = ((1 + (2*curve_fit_cr[0]*yvals[-1]*ym_per_pix + curve_fit_cr[1])**2)**1.5) \
+                        / np.absolute(2*curve_fit_cr[0])
 
     # Caluculate the offset of the car on the road
     camera_center = (left_fitx[-1] + right_fitx[-1]) / 2
@@ -238,7 +231,7 @@ window_height = 80
 
 # Set up the overall class to do all the tracking
 curve_centers = Tracker(mywindow_width=window_width, mywindow_height=window_height, mymargin=25,
-                        my_ym=10 / 720, my_xm=4 / 384, mysmooth_factor=15)
+                        my_ym=30/720, my_xm=3.7/700, mysmooth_factor=15)
 
 clip1 = VideoFileClip(input_video)
 video_clip = clip1.fl_image(process_image)

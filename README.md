@@ -119,7 +119,7 @@ to keep the markers stable (line 93 in `tracker.py`).
 
 [The radius of curvatur](http://www.intmath.com/applications-differentiation/8-radius-curvature.php)
  is computed by averaging the curvature of left and right lanes 
-(lines 140-152 in 10th cell in `image_generation.ipynb`). Note that the naive calculation of 
+(lines 140-148 in 10th cell in `image_generation.ipynb`). Note that the naive calculation of 
 the curvature generate the curvature in the pixel size, and not actual curvature of the road.
 To resolve the problem, the "meter per pixel ratios for x and y direction" are determined and 
 lane-line pixels were converted to the actual scale before the calculation of the curvature.

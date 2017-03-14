@@ -1,4 +1,4 @@
-##Advanced Lane Lines
+## Advanced Lane Lines
 
 **Advanced Lane Finding Project**
 
@@ -25,7 +25,7 @@ The goals / steps of this project are the following:
 [video1]: ./output1_tracked.mp4 "Video"
 
 ---
-####1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
+#### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
 The code for this step is contained in the 2nd-3rd cell of the Jupyter notebook located in "camera_calibration.ipynb".  
 
@@ -42,9 +42,9 @@ is as follow:
 
 ![alt text][image1]
 
-###Pipeline (single images)
+### Pipeline (single images)
 
-####1. Provide an example of a distortion-corrected image.
+#### 1. Provide an example of a distortion-corrected image.
 The distortion-correction via the camera calibration is applied to the test images in
 "test_images" folder in addition to the undistorted image results. 
 Here the code for this step is found in the 5th cell of the Jupyter notebook in 
@@ -53,7 +53,7 @@ Here the code for this step is found in the 5th cell of the Jupyter notebook in
 where we can observe that the right-most car is partially cut due to the image 
 undistortion. You can find other results in "output_images" folder.
 
-####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
+#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 I used a combination of color and gradient thresholds to generate a binary image 
 (the convert functions are found in the 2nd cell, and thresholding steps in the 6th cell of Jupyter notebook
 `image_generation.ipynb`, respectively, and all the test results will be found in "output_images" folder). 
@@ -62,7 +62,7 @@ the gradient but it turned out that it generates more noise and after several tr
 them. Here's an example of my output for this step:
 ![alt text][image3]
 
-####3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
+#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
 The codes for my perspective transform are found in the 7th (calibration by straight line) and 8th (test examples) cell of Jupyter notebook
 `image_generation.ipynb` (lines 28-55 in the cell), and the other test results in "output_images" folder.
@@ -102,7 +102,7 @@ images in the 8th cell of Jupyter notebook (`image_generation.ipynb`).
 ![alt text][image5]
 
 
-####4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
 Then I used the sliding window method with convolution to find lane-line pixels
 (lines 37-93 in `tracker.py` and lines 73-87 in 9th cell in `image_generation.ipynb`)
@@ -115,7 +115,7 @@ to keep the markers stable (line 93 in `tracker.py`).
 
 ![alt text][image6]
 
-####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
 [The radius of curvatur](http://www.intmath.com/applications-differentiation/8-radius-curvature.php)
  is computed by averaging the curvature of left and right lanes 
@@ -128,7 +128,7 @@ Similarly the position of the vehicle with respect to center was computed using 
 between the center of the image and the center of left and right lanes for x direction at 
 the bottom of image, with the "meter per pixel rations for x direction" conversion.
 
-####6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
+#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
 I implemented this step in lines 134-135 in 10th cell in `image_generation.ipynb`.
 Here The inverse transformation from the destination to original source points, Minv, is used.
@@ -138,9 +138,9 @@ An example of my result on a test image is:
 
 ---
 
-###Pipeline (video)
+### Pipeline (video)
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
 To generate the final video output, I gathered all `image_generation.ipynb` code to `video_gen.py` and 
 refined the code to remove unnecessary code and reorganized code so the Tracker class works properly.
@@ -150,9 +150,9 @@ Here's a [link to my video result](./output1_tracked.mp4).
 
 ---
 
-###Discussion
+### Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 I found my lane detector could fail to identify the correct lanes possibly in two situations.
 
